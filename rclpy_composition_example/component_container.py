@@ -2,16 +2,9 @@ import signal
 import rclpy
 from rclpy.executors import SingleThreadedExecutor
 from rclpy.component import ComponentManager
-from .talker_component import MyTalker
-from .utils import register_component
-
-from . import talker_component
-
-
-# print("............ register component mycomposition::MyTalker")
-# register_component("mycomposition::MyTalker", talker_component)
 
 def main():
+    print("run component_container")
     try:
         _main()
     except KeyboardInterrupt:
