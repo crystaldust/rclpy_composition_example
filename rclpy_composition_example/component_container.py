@@ -16,7 +16,7 @@ def _main():
     rclpy.init()
 
     executor = SingleThreadedExecutor()
-    component_manager = ComponentManager(executor)
+    component_manager = ComponentManager(executor, "PyComponentManager")
 
     executor.add_node(component_manager)
     executor.spin()

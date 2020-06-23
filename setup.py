@@ -3,8 +3,8 @@ from rclpy.component import rclpy_register_component
 
 package_name = 'rclpy_composition_example'
 rclpy_components = [
-    'composition::Talker = rclpy_composition_example.talker_component:Talker',
-    'composition::Listener = rclpy_composition_example.listener_component:Listener',
+    'py_composition::Talker = rclpy_composition_example.talker_component:Talker',
+    'py_composition::Listener = rclpy_composition_example.listener_component:Listener',
 ]
 
 setup(

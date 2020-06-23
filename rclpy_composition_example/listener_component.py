@@ -3,7 +3,7 @@ from rclpy.node import Node
 
 
 class Listener(Node):
-    def __init__(self, node_name, *kargs, topic_name="composition_topic", **kwargs):
+    def __init__(self, node_name, *kargs, topic_name="py_composition_topic", **kwargs):
         super().__init__(node_name, *kargs, **kwargs)
         self.subscription_ = self.create_subscription(String, topic_name, self.on_receive_msg, 0)
 
