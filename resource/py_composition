@@ -1,0 +1,2 @@
+py_composition::Talker;rclpy_composition_example.talker_component:Talker
+py_composition::Listener;rclpy_composition_example.listener_component:Listener

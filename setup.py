@@ -1,5 +1,5 @@
 from setuptools import setup
-from rclpy.component import rclpy_register_component
+# from rclpy.component import rclpy_register_component
 
 package_name = 'rclpy_composition_example'
 rclpy_components = [
@@ -15,6 +15,8 @@ setup(
         ('share/ament_index/resource_index/packages',
          ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        ('share/ament_index/resource_index/rclpy_components',
+         ['resource/' + 'py_composition'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -31,5 +33,3 @@ setup(
         'rclpy_components': rclpy_components
     },
 )
-
-rclpy_register_component(rclpy_components)

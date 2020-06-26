@@ -13,26 +13,17 @@ $ mkdir -p ~/rclpy_composition_ws/src
 $ cd ~/rclpy_composition_ws/src
 $ git clone --branch composition_api https://github.com/crystaldust/rclpy
 $ git clone --branch composition_api https://github.com/crystaldust/ros2cli
-$ git clone --branch composition_api https://github.com/crystaldust/rclpy_composition_example
+$ git clone --branch composition_api-install-file https://github.com/crystaldust/rclpy_composition_example
 $ cd ../
 ```
 
-Then, **important: build rclpy first**, since rclpy_composition_example calls `rclpy.component.rclpy_register_components` while building, we are not able to solve the build time dependency availability problem yet.
+Then build and source the environment script, use `which ros2` command to check if our customized cli tool is being used:
 
 ```shell
-$ colcon build --packages-select rclpy
+$ colcon build
 $ source install/setup.bash
-
-$ colcon build --packages-skip rclpy # Build the rest two packages
-$ source install/setup.bash
-```
-
-When `rclpy_composition_example` is built, the customized component should be registered under the path:
-
-```shell
-$ cat install/rclpy_composition_example/share/ament_index/resource_index/rclpy_components/py_composition
-py_composition::Talker;rclpy_composition_example.talker_component:Talker
-py_composition::Listener;rclpy_composition_example.listener_component:Listener
+$ which ros2
+/root/rclpy_composition_ws/install/ros2cli/bin/ros2 # Make sure it's not /opt/ros/<distro>/bin/ros2
 ```
 
 Then test if ros2cli can recognize the rclpy_components:
@@ -65,6 +56,7 @@ $ ros2 run rclpy_composition_example component_container
 Open a new session and call the component commands:
 
 ```shell
+$ source ~/rclpy_composition_ws/install/setup.bash # Don't forget to update the environment
 $ ros2 component list
 /PyComponentManager
 $ ros2 component load /PyComponentManager py_composition py_composition::Talker
