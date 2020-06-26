@@ -32,4 +32,4 @@ setup(
     },
 )
 
-rclpy_register_component(package_name, rclpy_components)
+rclpy_register_component(rclpy_components)
