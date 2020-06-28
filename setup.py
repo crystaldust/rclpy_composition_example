@@ -1,11 +1,6 @@
 from setuptools import setup
-from rclpy.component import rclpy_register_component
 
 package_name = 'rclpy_composition_example'
-rclpy_components = [
-    'py_composition::Talker = rclpy_composition_example.talker_component:Talker',
-    'py_composition::Listener = rclpy_composition_example.listener_component:Listener',
-]
 
 setup(
     name=package_name,
@@ -28,8 +23,10 @@ setup(
             'component_container = rclpy_composition_example.component_container:main',
             'component_container_mt = rclpy_composition_example.component_container_mt:main',
         ],
-        'rclpy_components': rclpy_components
+        'rclpy_components': [
+            'py_composition::Talker = rclpy_composition_example.talker_component:Talker',
+            'py_composition::Listener = rclpy_composition_example.listener_component:Listener',
+        ]
     },
 )
 
-rclpy_register_component(package_name, rclpy_components)
