@@ -1,19 +1,19 @@
-# The composition example for rclpy(ROS2 python client library)
+# The composition example for rclpy
 
 
 
 ## Try the example
 
-**For now the  composition API implementation is not in ROS2 base repos**, so we use the customized rclpy, ros2cli and these project for demonstration. I assume you have a ready to work underlay, I'd personally recommend using Docker image `ros2:nightly-dev` to test it to make a minimal impact of your own environment.
+**For now the  composition API implementation is not in ROS2 base repos**, so we use the customized rclpy, ros2cli for demonstration. I assume you have a underlay ready to work, I'd personally recommend using Docker image `ros2:nightly-dev` to test it to make a minimal impact of your own environment.
 
 First prepare the workspace and related repos
 
 ```shell
 $ mkdir -p ~/rclpy_composition_ws/src
 $ cd ~/rclpy_composition_ws/src
-$ git clone --branch composition_api https://github.com/crystaldust/rclpy
-$ git clone --branch composition_api https://github.com/crystaldust/ros2cli
-$ git clone --branch composition_api-install-file https://github.com/crystaldust/rclpy_composition_example
+$ git clone --branch composition-api-py-entrypoints https://github.com/crystaldust/rclpy
+$ git clone --branch composition-api-py-entrypoints https://github.com/crystaldust/ros2cli
+$ git clone --branch composition-api https://github.com/crystaldust/rclpy_composition_example
 $ cd ../
 ```
 
@@ -26,7 +26,7 @@ $ which ros2
 /root/rclpy_composition_ws/install/ros2cli/bin/ros2 # Make sure it's not /opt/ros/<distro>/bin/ros2
 ```
 
-Then test if ros2cli can recognize the rclpy_components:
+Test if ros2cli can recognize the rclpy_components:
 
 ```shell
 $ ros2 component types
@@ -43,11 +43,7 @@ rclpy_components/py_composition
   py_composition::Listener
 ```
 
-A little difference here is, the composition types will begin with a language mark(the `rclcpp_components`, `rclpy_components`).
-
-
-
-Run a component_container:
+A little difference here is, the composition types will begin with a language mark(the `rclcpp_components`, `rclpy_components`), let's run a component_container:
 
 ```shell
 $ ros2 run rclpy_composition_example component_container
@@ -78,3 +74,55 @@ Then go back to the previous session, the container will display the Talker and 
 [INFO] [1592908815.920822898] [Listener]: I heard Hello from composition talker 4
 ```
 
+Then we can unload the nodes from container:
+
+```bash
+$ ros2 component unload /PyComponentManager 2
+Unloaded component 2 from '/PyComponentManager' container node
+$ ros2 component unload /PyComponentManager 1
+Unloaded component 1 from '/PyComponentManager' container node
+```
+
+
+
+## What's happening behind this?
+
+If you look into the `setup.py` file you'll find the magic in `data_files` and `entry_points` parameter for composition:
+
+```python
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=[package_name],
+	data_files=[
+        ('share/ament_index/resource_index/packages',
+         ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        ('share/ament_index/resource_index/packages',
+         ['resource/' + 'py_composition'])
+    ],
+
+	entry_points={
+        'console_scripts': [
+            'component_container = rclpy_composition_example.component_container:main',
+            'component_container_mt = rclpy_composition_example.component_container_mt:main',
+        ],
+        'rclpy_components': [
+            'py_composition::Talker = rclpy_composition_example.talker_component:Talker',
+            'py_composition::Listener = rclpy_composition_example.listener_component:Listener',
+        ]
+    },
+)
+```
+
+Here we declares a couple of `rclpy_components` entry points which will let the ros2cli component verb find the entry point values. Then when loading components, the component container will be able to access the actual class reference, instantiate it and put the instance into the executor.
+
+The file `resource/py_composition` is an empty file, which will be installed to the ament index resource folder `<share/ament_index/resource_index/packages`, the file is used when fetch component types with a package_name parameter:
+
+```bash
+$ ros2 component types py_composition
+py_composition::Listener
+py_composition::Talker
+```
+
+The constrains is the file name and entry point name prefix should be the same, the file will also be used for arg complete when run the command in terminal.
