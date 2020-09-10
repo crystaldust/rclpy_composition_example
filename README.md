@@ -11,8 +11,9 @@ First prepare the workspace and related repos
 ```shell
 $ mkdir -p ~/rclpy_composition_ws/src
 $ cd ~/rclpy_composition_ws/src
-$ git clone --branch composition-api https://github.com/crystaldust/rclpy
-$ git clone --branch composition-api-py-entrypoints https://github.com/crystaldust/ros2cli
+$ git clone --branch composition-api-pr https://github.com/crystaldust/rclpy
+$ git clone --branch composition-api-pr https://github.com/crystaldust/ros2cli
+$ git clone --branch master https://github.com/crystaldust/rcl_component_searchers
 $ git clone --branch composition-api https://github.com/crystaldust/rclpy_composition_example
 $ cd ../
 ```
@@ -46,7 +47,7 @@ rclpy_components/py_composition
 A little difference here is, the composition types will begin with a language mark(the `rclcpp_components`, `rclpy_components`), let's run a component_container:
 
 ```shell
-$ ros2 run rclpy_composition_example component_container
+$ ros2 run rclpy_components component_container
 ```
 
 Open a new session and call the component commands:
@@ -84,14 +85,10 @@ setup(
     version='0.0.0',
     packages=[package_name],
 	entry_points={
-        'console_scripts': [
-            'component_container = rclpy_composition_example.component_container:main',
-            'component_container_mt = rclpy_composition_example.component_container_mt:main',
-        ],
-        'rclpy_components': [
-            'py_composition::Talker = rclpy_composition_example.talker_component:Talker',
-            'py_composition::Listener = rclpy_composition_example.listener_component:Listener',
-        ]
+		'rclpy_components': [
+		    'py_composition::Talker = rclpy_composition_example.talker_component:Talker',
+		    'py_composition::Listener = rclpy_composition_example.listener_component:Listener',
+		]
     },
 )
 ```
